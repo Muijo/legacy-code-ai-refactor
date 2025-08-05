@@ -1,0 +1,76 @@
+{
+  "reportType": "comprehensive",
+  "generatedAt": "2025-08-01T04:13:12.633Z",
+  "version": "1.0",
+  "data": {
+    "timestamp": 1754021592633,
+    "summary": {
+      "totalBatches": 0,
+      "totalTasks": 0,
+      "successfulTasks": 0,
+      "failedTasks": 0,
+      "successRate": 0,
+      "totalLinesRefactored": 0
+    },
+    "metrics": {
+      "averageTaskDuration": 0,
+      "averageQualityImprovement": 0,
+      "averageComplexityReduction": 0,
+      "technicalDebtReduction": 0,
+      "performanceGains": 0
+    },
+    "conflicts": {
+      "totalConflicts": 0,
+      "recentConflicts": [],
+      "conflictRate": 0
+    },
+    "trends": {
+      "enabled": true,
+      "quality": {
+        "status": "insufficient_data",
+        "dataPoints": 0
+      },
+      "performance": {
+        "status": "insufficient_data",
+        "dataPoints": 0
+      }
+    },
+    "recommendations": [
+      {
+        "type": "success_rate",
+        "priority": "high",
+        "message": "Success rate is 0%. Consider reviewing failed tasks and improving error handling.",
+        "actionItems": [
+          "Analyze common failure patterns",
+          "Improve input validation",
+          "Enhance error recovery mechanisms"
+        ]
+      },
+      {
+        "type": "quality_improvement",
+        "priority": "medium",
+        "message": "Average quality improvement is 0%. Consider more aggressive modernization strategies.",
+        "actionItems": [
+          "Review modernization patterns",
+          "Increase refactoring scope",
+          "Apply additional quality checks"
+        ]
+      },
+      {
+        "type": "performance",
+        "priority": "medium",
+        "message": "Average performance gain is 0%. Focus on performance optimizations.",
+        "actionItems": [
+          "Profile generated code",
+          "Apply performance patterns",
+          "Optimize critical paths"
+        ]
+      }
+    ],
+    "metadata": {
+      "reportId": "json_1754021592637",
+      "generatedBy": "Legacy Code AI Refactor",
+      "format": "json"
+    }
+  }
+}

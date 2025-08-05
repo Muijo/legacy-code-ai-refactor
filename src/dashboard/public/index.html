@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legacy Code AI Refactor Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+    <div class="dashboard">
+        <header class="header">
+            <h1>Legacy Code AI Refactor Dashboard</h1>
+            <div class="header-actions">
+                <button id="newProjectBtn" class="btn btn-primary">New Project</button>
+                <div class="user-menu">
+                    <span id="userName"></span>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <!-- Projects Overview -->
+            <section id="projectsSection" class="section">
+                <h2>Projects</h2>
+                <div id="projectsList" class="projects-grid">
+                    <!-- Projects will be loaded here -->
+                </div>
+            </section>
+
+            <!-- Project Details -->
+            <section id="projectDetailsSection" class="section hidden">
+                <div class="section-header">
+                    <h2 id="projectTitle">Project Details</h2>
+                    <button id="backToProjectsBtn" class="btn btn-secondary">Back to Projects</button>
+                </div>
+                
+                <div class="project-tabs">
+                    <button class="tab-btn active" data-tab="overview">Overview</button>
+                    <button class="tab-btn" data-tab="analysis">Analysis</button>
+                    <button class="tab-btn" data-tab="suggestions">Suggestions</button>
+                    <button class="tab-btn" data-tab="refactoring">Refactoring</button>
+                    <button class="tab-btn" data-tab="reviews">Reviews</button>
+                    <button class="tab-btn" data-tab="results">Results</button>
+                </div>
+
+                <div class="tab-content">
+                    <!-- Overview Tab -->
+                    <div id="overviewTab" class="tab-pane active">
+                        <div class="overview-grid">
+                            <div class="overview-card">
+                                <h3>Project Status</h3>
+                                <div id="projectStatus" class="status-badge">Loading...</div>
+                            </div>
+                            <div class="overview-card">
+                                <h3>Progress</h3>
+                                <div class="progress-container">
+                                    <div class="progress-item">
+                                        <span>Analysis</span>
+                                        <div class="progress-bar">
+                                            <div id="analysisProgress" class="progress-fill" style="width: 0%"></div>
+                                        </div>
+                                    </div>
+                                    <div class="progress-item">
+                                        <span>Refactoring</span>
+                                        <div class="progress-bar">
+                                            <div id="refactoringProgress" class="progress-fill" style="width: 0%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="overview-card">
+                                <h3>Actions</h3>
+                                <div class="action-buttons">
+                                    <button id="analyzeBtn" class="btn btn-primary">Start Analysis</button>
+                                    <button id="refactorBtn" class="btn btn-success" disabled>Start Refactoring</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Analysis Tab -->
+                    <div id="analysisTab" class="tab-pane">
+                        <div id="analysisResults">
+                            <p>Run analysis to see results here.</p>
+                        </div>
+                    </div>
+
+                    <!-- Suggestions Tab -->
+                    <div id="suggestionsTab" class="tab-pane">
+                        <div id="suggestionsList">
+                            <p>Analysis must be completed to see suggestions.</p>
+                        </div>
+                    </div>
+
+                    <!-- Refactoring Tab -->
+                    <div id="refactoringTab" class="tab-pane">
+                        <div id="refactoringStatus">
+                            <p>Select suggestions and start refactoring to see progress here.</p>
+                        </div>
+                        <div id="interventionsList">
+                            <!-- Manual interventions will appear here -->
+                        </div>
+                    </div>
+
+                    <!-- Reviews Tab -->
+                    <div id="reviewsTab" class="tab-pane">
+                        <div class="reviews-header">
+                            <h3>Code Reviews</h3>
+                            <div class="review-filters">
+                                <select id="reviewStatusFilter">
+                                    <option value="all">All Reviews</option>
+                                    <option value="pending">Pending</option>
+                                    <option value="approved">Approved</option>
+                                    <option value="rejected">Rejected</option>
+                                </select>
+                                <select id="reviewRiskFilter">
+                                    <option value="all">All Risk Levels</option>
+                                    <option value="high-risk">High Risk</option>
+                                    <option value="medium-risk">Medium Risk</option>
+                                    <option value="low-risk">Low Risk</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div id="reviewsList">
+                            <p>Reviews will appear here after refactoring starts.</p>
+                        </div>
+                    </div>
+
+                    <!-- Results Tab -->
+                    <div id="resultsTab" class="tab-pane">
+                        <div id="refactoringResults">
+                            <p>Complete refactoring to see results here.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- New Project Modal -->
+    <div id="newProjectModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Create New Project</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <form id="newProjectForm">
+                <div class="form-group">
+                    <label for="projectName">Project Name</label>
+                    <input type="text" id="projectName" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="projectDescription">Description</label>
+                    <textarea id="projectDescription" name="description" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="projectFiles">Legacy Code Files</label>
+                    <input type="file" id="projectFiles" name="files" multiple accept=".js,.php,.java,.py">
+                    <small>Select JavaScript, PHP, Java, or Python files</small>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelProjectBtn">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create Project</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Manual Intervention Modal -->
+    <div id="interventionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Manual Intervention Required</h3>
+            </div>
+            <div id="interventionContent">
+                <!-- Intervention details will be loaded here -->
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" id="skipInterventionBtn">Skip</button>
+                <button type="button" class="btn btn-primary" id="approveInterventionBtn">Approve</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Code Review Modal -->
+    <div id="reviewModal" class="modal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3 id="reviewModalTitle">Code Review</h3>
+                <button class="modal-close" onclick="dashboard.hideReviewModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="review-info">
+                    <div class="review-meta">
+                        <span id="reviewRiskLevel" class="risk-badge">Medium Risk</span>
+                        <span id="reviewConfidence" class="confidence-badge">85% Confidence</span>
+                        <span id="reviewStatus" class="status-badge">Pending</span>
+                    </div>
+                </div>
+                
+                <div class="review-tabs">
+                    <button class="review-tab-btn active" data-tab="diff">Code Changes</button>
+                    <button class="review-tab-btn" data-tab="analysis">Analysis</button>
+                    <button class="review-tab-btn" data-tab="comments">Comments</button>
+                </div>
+
+                <div class="review-tab-content">
+                    <!-- Code Diff Tab -->
+                    <div id="diffTab" class="review-tab-pane active">
+                        <div id="codeDiff">
+                            <!-- Code diff will be rendered here -->
+                        </div>
+                    </div>
+
+                    <!-- Analysis Tab -->
+                    <div id="analysisReviewTab" class="review-tab-pane">
+                        <div id="reviewAnalysis">
+                            <!-- Analysis details will be rendered here -->
+                        </div>
+                    </div>
+
+                    <!-- Comments Tab -->
+                    <div id="commentsTab" class="review-tab-pane">
+                        <div id="reviewComments">
+                            <!-- Comments will be rendered here -->
+                        </div>
+                        <div class="add-comment">
+                            <textarea id="newComment" placeholder="Add a comment..." rows="3"></textarea>
+                            <button class="btn btn-primary" onclick="dashboard.addComment()">Add Comment</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Review Decision Form -->
+                <div class="review-decision">
+                    <h4>Review Decision</h4>
+                    <div class="decision-options">
+                        <label>
+                            <input type="radio" name="reviewDecision" value="approve"> Approve Changes
+                        </label>
+                        <label>
+                            <input type="radio" name="reviewDecision" value="request-changes"> Request Changes
+                        </label>
+                        <label>
+                            <input type="radio" name="reviewDecision" value="reject"> Reject Changes
+                        </label>
+                    </div>
+                    
+                    <div class="feedback-section">
+                        <h5>Feedback (Optional)</h5>
+                        <div class="feedback-ratings">
+                            <div class="rating-item">
+                                <label>AI Accuracy (1-5):</label>
+                                <select id="aiAccuracyRating">
+                                    <option value="">Select...</option>
+                                    <option value="1">1 - Poor</option>
+                                    <option value="2">2 - Fair</option>
+                                    <option value="3">3 - Good</option>
+                                    <option value="4">4 - Very Good</option>
+                                    <option value="5">5 - Excellent</option>
+                                </select>
+                            </div>
+                            <div class="rating-item">
+                                <label>Code Quality (1-5):</label>
+                                <select id="codeQualityRating">
+                                    <option value="">Select...</option>
+                                    <option value="1">1 - Poor</option>
+                                    <option value="2">2 - Fair</option>
+                                    <option value="3">3 - Good</option>
+                                    <option value="4">4 - Very Good</option>
+                                    <option value="5">5 - Excellent</option>
+                                </select>
+                            </div>
+                            <div class="rating-item">
+                                <label>Usefulness (1-5):</label>
+                                <select id="usefulnessRating">
+                                    <option value="">Select...</option>
+                                    <option value="1">1 - Not Useful</option>
+                                    <option value="2">2 - Slightly Useful</option>
+                                    <option value="3">3 - Moderately Useful</option>
+                                    <option value="4">4 - Very Useful</option>
+                                    <option value="5">5 - Extremely Useful</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="feedback-text">
+                            <label>
+                                <input type="checkbox" id="wouldUseAgain"> I would use this AI refactoring tool again
+                            </label>
+                            <textarea id="feedbackComments" placeholder="Additional feedback or suggestions..." rows="3"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" onclick="dashboard.hideReviewModal()">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="dashboard.submitReview()">Submit Review</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
